@@ -2,18 +2,19 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="在瀏覽器將同一張圖片轉成三種品質的 WebP，並排比較後下載。">
+<meta name="description" content="在瀏覽器將同一張圖片轉成四種品質的 WebP，並排比較後下載。">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src blob:; connect-src 'none'; base-uri 'none'; form-action 'none'">
 <title>像素對照室｜WebP 轉換</title><link rel="stylesheet" href="style.css"><script defer src="app.js"></script>
 </head>
 <body>
 <header class="top"><div class="wrap topin"><div class="brand"><span class="mark" aria-hidden="true">W</span>像素對照室</div><span class="badge"><span aria-hidden="true">●</span> 瀏覽器內處理</span></div></header>
 <main class="wrap">
-  <section class="intro" aria-labelledby="title"><p class="eyebrow">圖片格式工具 / WEBP</p><h1 id="title">一張圖片，<br class="narrow">三種 WebP。</h1><p>轉換後並排比較畫質與檔案大小，挑最適合的一張下載。</p></section>
+  <section class="intro" aria-labelledby="title"><p class="eyebrow">圖片格式工具 / WEBP</p><h1 id="title">一張圖片，<br class="narrow">四種 WebP。</h1><p>轉換後並排比較畫質與檔案大小，挑最適合的一張下載。</p></section>
+  <div class="zoom-bar" aria-labelledby="zoom-label"><label id="zoom-label" for="zoom">同步預覽縮放</label><select id="zoom" disabled><option value="fit">符合視窗</option><option value="100">100%（原始像素）</option><option value="200">200%</option><option value="400">400%</option></select><span>放大後可滑動比較各圖同一區域，不影響下載。</span></div>
   <section class="work" aria-labelledby="source-title">
     <section class="source">
       <div class="label"><span class="key" aria-hidden="true">A</span><h2 id="source-title">選擇原圖</h2></div>
-      <div id="drop" class="drop">
+      <div id="drop" class="drop viewport" tabindex="0" aria-label="原圖預覽區">
         <div id="placeholder" class="placeholder"><span class="image-icon" aria-hidden="true">▧</span><strong>將圖片拖曳到這裡</strong><span>或透過下方按鈕選擇檔案</span></div>
         <img id="original" hidden alt="選取的原圖預覽">
       </div>
@@ -27,9 +28,10 @@
       <div class="label"><span class="key" aria-hidden="true">B</span><h2 id="results-title">轉換比較</h2></div>
       <p class="hint">百分比是編碼品質設定，不代表檔案會縮小同樣比例。解析度不變。</p>
       <div class="cards" id="cards">
-        <article class="card" data-quality="80"><header><h3>80<span>%</span></h3><span class="tag">較高畫質</span></header><div class="frame"><span class="await">等待轉換</span><img hidden alt="WebP 品質 80% 預覽"></div><div class="info"><strong class="size">尚無結果</strong><span class="change"></span></div><a hidden class="download">下載 WebP</a></article>
-        <article class="card" data-quality="50"><header><h3>50<span>%</span></h3><span class="tag">畫質與大小兼顧</span></header><div class="frame"><span class="await">等待轉換</span><img hidden alt="WebP 品質 50% 預覽"></div><div class="info"><strong class="size">尚無結果</strong><span class="change"></span></div><a hidden class="download">下載 WebP</a></article>
-        <article class="card" data-quality="30"><header><h3>30<span>%</span></h3><span class="tag">較低品質設定</span></header><div class="frame"><span class="await">等待轉換</span><img hidden alt="WebP 品質 30% 預覽"></div><div class="info"><strong class="size">尚無結果</strong><span class="change"></span></div><a hidden class="download">下載 WebP</a></article>
+        <article class="card" data-quality="80"><header><h3>80<span>%</span></h3><span class="tag">較高畫質</span></header><div class="frame viewport" tabindex="0" aria-label="品質 80% 預覽區"><span class="await">等待轉換</span><img hidden alt="WebP 品質 80% 預覽"></div><div class="info"><strong class="size">尚無結果</strong><span class="change"></span></div><a hidden class="download">下載 WebP</a></article>
+        <article class="card" data-quality="50"><header><h3>50<span>%</span></h3><span class="tag">畫質與大小兼顧</span></header><div class="frame viewport" tabindex="0" aria-label="品質 50% 預覽區"><span class="await">等待轉換</span><img hidden alt="WebP 品質 50% 預覽"></div><div class="info"><strong class="size">尚無結果</strong><span class="change"></span></div><a hidden class="download">下載 WebP</a></article>
+        <article class="card" data-quality="30"><header><h3>30<span>%</span></h3><span class="tag">較低品質設定</span></header><div class="frame viewport" tabindex="0" aria-label="品質 30% 預覽區"><span class="await">等待轉換</span><img hidden alt="WebP 品質 30% 預覽"></div><div class="info"><strong class="size">尚無結果</strong><span class="change"></span></div><a hidden class="download">下載 WebP</a></article>
+        <article class="card" data-quality="10"><header><h3>10<span>%</span></h3><span class="tag">最低品質設定</span></header><div class="frame viewport" tabindex="0" aria-label="品質 10% 預覽區"><span class="await">等待轉換</span><img hidden alt="WebP 品質 10% 預覽"></div><div class="info"><strong class="size">尚無結果</strong><span class="change"></span></div><a hidden class="download">下載 WebP</a></article>
       </div>
     </section>
   </section>

@@ -1,5 +1,5 @@
 'use strict';
-const qualities = [80, 50, 30];
+const qualities = [80, 50, 30, 10];
 const maxSize = 25 * 1024 * 1024, maxPixels = 24_000_000, maxEdge = 8192;
 const supported = /\.(jpe?g|png|webp|gif|bmp|avif)$/i;
 const sizeText = n => n < 1024 ? n + ' B' : n < 1024 ** 2
@@ -37,6 +37,46 @@ function init(doc) {
     convert = $('#convert'), status = $('#status');
   const cards = qualities.map(q => doc.querySelector('[data-quality="' + q + '"]'));
   let selected, sourceURL, resultURLs = [], serial = 0, busy = false, frame;
+  const zoom = $('#zoom');
+  const previews = [{box:drop, img:original}, ...cards.map(card => ({box:card.querySelector('.frame'), img:card.querySelector('img')}))];
+  let anchor = [0, 0];
+  const programmed = new WeakMap();
+  function matchScroll(except) {
+    for (const {box,img} of previews) {
+      if (box === except || img.hidden || zoom.value === 'fit') continue;
+      const x = Math.min(anchor[0], Math.max(0, box.scrollWidth - box.clientWidth));
+      const y = Math.min(anchor[1], Math.max(0, box.scrollHeight - box.clientHeight));
+      if (box.scrollLeft !== x || box.scrollTop !== y) {
+        box.scrollLeft = x; box.scrollTop = y;
+        programmed.set(box, [box.scrollLeft, box.scrollTop]);
+      }
+    }
+  }
+  let lastScale = 0;
+  function updateZoom() {
+    const scale = selected && zoom.value !== 'fit' ? Number(zoom.value) / 100 : 0;
+    if (scale !== lastScale) {
+      anchor = scale && lastScale ? anchor.map(value => value * scale / lastScale) : [0, 0];
+      lastScale = scale;
+    }
+    for (const {box,img} of previews) {
+      const enabled = Boolean(scale && !img.hidden);
+      box.classList.toggle('zoomed', enabled);
+      img.style.width = enabled ? Math.round(selected.width * scale) + 'px' : '';
+      img.style.height = enabled ? Math.round(selected.height * scale) + 'px' : '';
+    }
+    matchScroll();
+  }
+  zoom.addEventListener('change', updateZoom);
+  for (const {box,img} of previews) box.addEventListener('scroll', () => {
+    if (img.hidden || zoom.value === 'fit') return;
+    const x = box.scrollLeft, y = box.scrollTop, previous = programmed.get(box);
+    programmed.delete(box);
+    if (previous && previous[0] === x && previous[1] === y) return;
+    if (box.scrollWidth > box.clientWidth) anchor[0] = x;
+    if (box.scrollHeight > box.clientHeight) anchor[1] = y;
+    matchScroll(box);
+  });
   function message(text, err = false) { status.textContent = text; status.classList.toggle('error', err); }
   function clearResults() {
     for (const url of resultURLs) URL.revokeObjectURL(url);
@@ -47,6 +87,7 @@ function init(doc) {
       card.querySelector('.await').hidden = false; card.querySelector('.size').textContent = '尚無結果';
       card.querySelector('.change').textContent = '';
     }
+    updateZoom();
   }
   function clearSource() {
     if (sourceURL) URL.revokeObjectURL(sourceURL);
@@ -54,6 +95,7 @@ function init(doc) {
     sourceURL = frame = selected = undefined;
     original.removeAttribute('src'); original.hidden = true;
     $('#placeholder').hidden = false; $('#details').hidden = true; convert.disabled = true;
+    zoom.value = 'fit'; zoom.disabled = true; updateZoom();
   }
   async function select(files) {
     const ticket = ++serial; busy = false; clearSource(); clearResults();
@@ -77,7 +119,7 @@ function init(doc) {
       original.src = sourceURL; original.hidden = false; $('#placeholder').hidden = true;
       $('#filename').textContent = file.name;
       $('#metadata').textContent = selected.width + ' × ' + selected.height + ' 像素 · ' + sizeText(file.size);
-      $('#details').hidden = false; convert.disabled = false;
+      $('#details').hidden = false; convert.disabled = false; zoom.disabled = false; updateZoom();
       message('原圖已就緒，按「轉換成 WebP」開始。');
     } catch (err) { if (ticket === serial) message(err.message, true); }
     finally { if (typeof decoded?.close === 'function') decoded.close(); if (url) URL.revokeObjectURL(url); }
@@ -85,7 +127,7 @@ function init(doc) {
   async function convertImage() {
     if (!selected || busy) return;
     const ticket = serial, {file,width,height} = selected;
-    busy = true; convert.disabled = true; clearResults(); message('正在轉換三種 WebP…');
+    busy = true; convert.disabled = true; clearResults(); message('正在轉換四種 WebP…');
     const canvas = doc.createElement('canvas');
     try {
       canvas.width = width; canvas.height = height;
@@ -107,7 +149,8 @@ function init(doc) {
         link.href = resultURLs[i]; link.download = downloadName(file.name, qualities[i]); link.hidden = false;
         link.setAttribute('aria-label', '下載 WebP 品質 ' + qualities[i] + '%');
       });
-      message('已完成 80%、50%、30% 三種品質，可預覽與下載。');
+      updateZoom();
+      message('已完成 80%、50%、30%、10% 四種品質，可預覽與下載。');
     } catch (err) { if (ticket === serial) message('轉換未完成：' + err.message, true); }
     finally {
       canvas.width = canvas.height = 0;
