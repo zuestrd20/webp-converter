@@ -4,13 +4,13 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="在瀏覽器將同一張圖片轉成四種品質的 WebP，並排比較後下載。">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src blob:; connect-src 'none'; base-uri 'none'; form-action 'none'">
-<title>像素對照室｜WebP 轉換</title><link rel="stylesheet" href="style.css"><script defer src="app.js"></script>
+<title>像素對照室｜WebP 轉換</title><link rel="stylesheet" href="style.b03411913f6b.css"><script defer src="app.6a213718af45.js"></script>
 </head>
 <body>
 <header class="top"><div class="wrap topin"><div class="brand"><span class="mark" aria-hidden="true">W</span>像素對照室</div><span class="badge"><span aria-hidden="true">●</span> 瀏覽器內處理</span></div></header>
 <main class="wrap">
   <section class="intro" aria-labelledby="title"><p class="eyebrow">圖片格式工具 / WEBP</p><h1 id="title">一張圖片，<br class="narrow">四種 WebP。</h1><p>轉換後並排比較畫質與檔案大小，挑最適合的一張下載。</p></section>
-  <div class="zoom-bar" aria-labelledby="zoom-label"><label id="zoom-label" for="zoom">同步預覽縮放</label><select id="zoom" disabled><option value="fit">符合視窗</option><option value="100">100%（原始像素）</option><option value="200">200%</option><option value="400">400%</option></select><span>放大後可滑動比較各圖同一區域，不影響下載。</span></div>
+  <div class="zoom-bar" aria-labelledby="zoom-label"><label id="zoom-label" for="zoom">檢視（View）：同步縮放</label><select id="zoom" disabled><option value="fit">符合視窗</option><option value="100">100%（原始像素）</option><option value="200">200%</option><option value="400">400%</option></select><span>放大後可滑動比較各圖同一區域，不影響下載。</span></div>
   <section class="work" aria-labelledby="source-title">
     <section class="source">
       <div class="label"><span class="key" aria-hidden="true">A</span><h2 id="source-title">選擇原圖</h2></div>
@@ -20,7 +20,7 @@
       </div>
       <p id="details" class="details" hidden><strong id="filename"></strong><span id="metadata"></span></p>
       <input type="file" id="file" accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/jpeg,image/png,image/webp,image/gif,image/bmp,image/avif" hidden>
-      <div class="controls"><button type="button" id="choose">選擇圖片</button><button type="button" id="convert" class="primary" disabled>轉換成 WebP</button></div>
+      <div class="controls"><button type="button" id="choose">選擇圖片</button><button type="button" id="sample">試用範例</button><button type="button" id="convert" class="primary" disabled>轉換成 WebP</button></div>
       <p class="fine">一次一張，最多 25 MiB、2,400 萬像素。支援瀏覽器可讀取的 JPG、PNG、WebP、GIF、BMP、AVIF；動畫只取一幀，不保留動畫。</p>
       <p id="status" class="status" role="status" aria-live="polite"></p>
     </section>
